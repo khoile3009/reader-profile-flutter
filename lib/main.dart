@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reader_profile/pages/read_log.dart';
+import 'package:reader_profile/utilities/fakeData.dart';
+
+import 'pages/read_session.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,57 +17,65 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        routes: <String, WidgetBuilder>{
+          "/home": (BuildContext context) => HomePage(),
+          "/read_session": (BuildContext context) => const ReadSession()
+        },
+        title: 'Reader Profile',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         ),
-        home: MyHomePage(),
+        home: HomePage(),
       ),
     );
   }
 }
 
-class MyAppState extends ChangeNotifier {}
+class MyAppState extends ChangeNotifier {
+  // var sessionDatas = defaultSessionData;
+}
 
-class MyHomePage extends StatelessWidget {
+class ReadingSessionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-              child: NavigationRail(
-            extended: false,
-            selectedIndex: 0,
-            destinations: [
-              NavigationRailDestination(
-                icon: Icon(Icons.home),
-                label: Text('Home'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.list),
-                label: Text('Read log'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.account_circle),
-                label: Text('Personal'),
-              ),
-            ],
-          )),
-          Expanded(child: Placeholder())
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        tooltip: 'Start session',
-        onPressed: () {},
-        child: Icon(Icons.play_arrow,
-            color: Theme.of(context).colorScheme.onPrimary, size: 28),
-      ),
-    );
+    return const Placeholder();
   }
 }
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Home"),
+            bottom: const TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.account_circle)),
+                Tab(icon: Icon(Icons.list)),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              const Placeholder(),
+              ReadLog(
+                  // sessions: appState.sessionDatas,
+                  )
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed("/read_session");
+            },
+          ),
+        ));
+  }
+}
+
 
 // class MyHomePage extends StatelessWidget {
 //   @override
